@@ -4,15 +4,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const hasClerk = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
 
-export const UserAvatar = () => {
-  if (!hasClerk) {
-    return (
-      <Avatar className="h-8 w-8">
-        <AvatarFallback>U</AvatarFallback>
-      </Avatar>
-    );
-  }
+function DemoUserAvatar() {
+  return (
+    <Avatar className="h-8 w-8">
+      <AvatarFallback>U</AvatarFallback>
+    </Avatar>
+  );
+}
 
+function ClerkUserAvatar() {
   const { useUser } = require('@clerk/nextjs');
   const { user } = useUser();
 
@@ -25,4 +25,9 @@ export const UserAvatar = () => {
       </AvatarFallback>
     </Avatar>
   );
+}
+
+export const UserAvatar = () => {
+  if (!hasClerk) return <DemoUserAvatar />;
+  return <ClerkUserAvatar />;
 };
