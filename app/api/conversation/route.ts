@@ -1,26 +1,43 @@
-import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 import { Configuration, OpenAIApi } from 'openai';
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
+import { canCallLiveAI, demoChatReply, isDemoMode } from '@/lib/demo-mode';
 
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
     const body = await req.json();
     const { messages } = body;
 
-    if (!userId) return new NextResponse('Unauthorized', { status: 401 });
-
-    if (!configuration.apiKey)
-      return new NextResponse('Open AI Key not configured', { status: 500 });
-
-    if (!messages)
+    if (!messages || !Array.isArray(messages)) {
       return new NextResponse('Messages are required', { status: 400 });
+    }
+
+    const lastUser = [...messages]
+      .reverse()
+      .find((m: { role?: string }) => m?.role === 'user');
+    const userText = typeof lastUser?.content === 'string' ? lastUser.content : '';
+
+    // Hard stop: public demos never hit OpenAI unless explicitly enabled.
+    if (!canCallLiveAI()) {
+      return NextResponse.json(demoChatReply(userText, 'conversation'));
+    }
+
+    // Live path only when ALLOW_LIVE_AI=true and key exists.
+    let userId: string | null = null;
+    try {
+      const { auth } = await import('@clerk/nextjs');
+      userId = auth().userId;
+    } catch {
+      userId = null;
+    }
+
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    const configuration = new Configuration({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    const openai = new OpenAIApi(configuration);
 
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
@@ -30,6 +47,9 @@ export async function POST(req: Request) {
     return NextResponse.json(response.data.choices[0].message);
   } catch (error) {
     console.log('[CONVERSATION_ERROR]', error);
+    if (isDemoMode()) {
+      return NextResponse.json(demoChatReply('', 'conversation'));
+    }
     return new NextResponse('Internal error', { status: 500 });
   }
 }

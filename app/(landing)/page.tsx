@@ -66,8 +66,9 @@ const LandingPage = () => {
           The smartest AI toolkit for creators and builders
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
-          Explore conversation, image, video, music, and code generation in one
-          dashboard. This portfolio deploy runs in demo mode without auth keys.
+          Explore conversation, image, video, music, and code tools in one
+          dashboard. This portfolio deploy runs in safe demo mode — simulated
+          replies only, so visitors cannot trigger paid AI usage.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link

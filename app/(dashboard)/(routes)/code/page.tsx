@@ -63,11 +63,15 @@ const CodePage = () => {
     <div>
       <Heading
         title="Code Generation"
-        description="Our most advanced code generation model"
+        description="Demo code UI — live OpenAI is off (no usage charges)"
         icon={Code}
         iconColor="text-green-700"
         bgColor="bg-green-700/10"
       />
+      <div className="mx-4 mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 lg:mx-8">
+        Safe demo mode: code samples are simulated. No OpenAI billing unless you
+        explicitly enable live AI on the server.
+      </div>
       <div className="px-4 lg:px-8">
         <div>
           <Form {...form}>

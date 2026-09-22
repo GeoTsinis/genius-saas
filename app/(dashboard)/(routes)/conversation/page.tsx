@@ -62,11 +62,16 @@ const ConversationPage = () => {
     <div>
       <Heading
         title="Conversation"
-        description="Our most advanced conversation model"
+        description="Demo chat UI — live OpenAI is off (no usage charges)"
         icon={MessageSquare}
         iconColor="text-violet-500"
         bgColor="bg-violet-500/10"
       />
+      <div className="mx-4 mb-4 rounded-lg border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-900 lg:mx-8">
+        Safe demo mode: replies are simulated locally. Real GPT only runs if
+        you set <code className="font-mono">ALLOW_LIVE_AI=true</code> and{' '}
+        <code className="font-mono">OPENAI_API_KEY</code> on the server.
+      </div>
       <div className="px-4 lg:px-8">
         <div>
           <Form {...form}>
@@ -132,7 +137,7 @@ const ConversationPage = () => {
                 )}
               >
                 {message.role === 'user' ? <UserAvatar /> : <BotAvatar />}
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
             ))}
           </div>
